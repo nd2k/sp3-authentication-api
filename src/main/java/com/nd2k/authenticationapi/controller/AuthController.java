@@ -2,6 +2,7 @@ package com.nd2k.authenticationapi.controller;
 
 import com.nd2k.authenticationapi.model.dto.LoginDto;
 import com.nd2k.authenticationapi.model.dto.RegisterDto;
+import com.nd2k.authenticationapi.model.dto.ResponseDto;
 import com.nd2k.authenticationapi.service.UserAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ public class AuthController {
         }
     }
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody LoginDto loginDto) {
-        return null;
+    public ResponseDto loginUser(@RequestBody LoginDto loginDto) {
+        return userAuthService.loginUser(loginDto);
     }
 }

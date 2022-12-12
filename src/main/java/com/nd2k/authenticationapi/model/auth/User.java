@@ -22,7 +22,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Document("user-management")
+@Document("user")
 public class User implements UserDetails {
 
     @Id
@@ -31,7 +31,7 @@ public class User implements UserDetails {
     @Indexed(unique = true)
     private String email;
     private String password;
-    private Set<Role> role;
+    private Collection<? extends GrantedAuthority> authorities;
     @CreatedDate
     private Date createdAt;
     @LastModifiedDate
@@ -40,8 +40,8 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> authorities = new HashSet<>();
-        for (var r : this.role) {
-            var simpleGrantedAuthorities = new SimpleGrantedAuthority(r.name());
+        for (var a : this.authorities) {
+            var simpleGrantedAuthorities = new SimpleGrantedAuthority(a.getAuthority());
             authorities.add(simpleGrantedAuthorities);
         }
         return authorities;
