@@ -2,9 +2,13 @@ package com.nd2k.authenticationapi.service;
 
 import com.nd2k.authenticationapi.model.auth.Role;
 import com.nd2k.authenticationapi.model.auth.User;
+import com.nd2k.authenticationapi.model.dto.LoginDto;
 import com.nd2k.authenticationapi.model.dto.RegisterDto;
+import com.nd2k.authenticationapi.model.dto.ResponseDto;
 import com.nd2k.authenticationapi.repository.AuthRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +21,7 @@ public class UserAuthService {
 
     private final AuthRepository authRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
     public boolean registerNewUser(RegisterDto registerDto) {
         //TODO:Validate user input

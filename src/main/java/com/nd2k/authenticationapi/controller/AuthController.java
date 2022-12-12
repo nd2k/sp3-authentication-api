@@ -1,5 +1,6 @@
 package com.nd2k.authenticationapi.controller;
 
+import com.nd2k.authenticationapi.model.dto.LoginDto;
 import com.nd2k.authenticationapi.model.dto.RegisterDto;
 import com.nd2k.authenticationapi.service.UserAuthService;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +17,7 @@ import static java.lang.Boolean.TRUE;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
-
     private final UserAuthService userAuthService;
-
     @PostMapping("/register")
     public ResponseEntity<String> registerNewUser(@RequestBody RegisterDto registerDto) {
         if (TRUE.equals(userAuthService.registerNewUser(registerDto))) {
@@ -26,5 +25,9 @@ public class AuthController {
         } else {
             return new ResponseEntity<>("An technical issue happened", HttpStatus.BAD_REQUEST);
         }
+    }
+    @PostMapping("/login")
+    public ResponseEntity<String> loginUser(@RequestBody LoginDto loginDto) {
+        return null;
     }
 }
