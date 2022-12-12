@@ -1,4 +1,7 @@
 spring:
   profiles:
-    active:
-      - local
+    active: ${ENV}
+  data:
+    mongodb:
+      uri: mongodb+srv://${DB_USER}:${DB_PASSWORD}${DB_URI}
+      database: ${USER_MANAGEMENT}
