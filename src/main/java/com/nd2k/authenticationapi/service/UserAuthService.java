@@ -6,8 +6,8 @@ import com.nd2k.authenticationapi.model.dto.LoginDto;
 import com.nd2k.authenticationapi.model.dto.RegisterDto;
 import com.nd2k.authenticationapi.model.dto.ResponseDto;
 import com.nd2k.authenticationapi.repository.AuthRepository;
+import com.nd2k.authenticationapi.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -18,10 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +27,7 @@ public class UserAuthService {
     private final AuthRepository authRepository;
     private final PasswordEncoder passwordEncoder;
     private final DaoAuthenticationProvider authenticationProvider;
+    private final JwtUtils jwtUtils;
 
     public boolean registerNewUser(RegisterDto registerDto) {
         //TODO:Validate user input
@@ -50,9 +48,11 @@ public class UserAuthService {
                 new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword())
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwtToken = jwtUtils.generateJwtToken(authentication);
         return ResponseDto.builder()
-                .email("test")
+                .email(authentication.getName())
                 .authorities(authentication.getAuthorities())
+                .jwtToken(jwtToken)
                 .build();
     }
 }

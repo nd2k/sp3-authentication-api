@@ -19,14 +19,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User existingUser = authRepository.findUserByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
-        return User.builder()
-                .email(existingUser.getEmail())
-                .username(existingUser.getUsername())
-                .password(existingUser.getPassword())
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(existingUser.getEmail())
                 .authorities(existingUser.getAuthorities())
-                .id(existingUser.getId())
-                .createdAt(existingUser.getCreatedAt())
-                .updatedAt(existingUser.getUpdatedAt())
+                .password(existingUser.getPassword())
                 .build();
     }
 }
