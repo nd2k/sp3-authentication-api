@@ -14,8 +14,10 @@ import java.util.Collection;
 @Builder
 public class AuthResponseDto {
 
+    private String userId;
     private String username;
     private String email;
     private Collection<? extends GrantedAuthority> authorities;
-    private String jwtToken;
+    private String accessToken;
+    private String refreshToken;
 }
