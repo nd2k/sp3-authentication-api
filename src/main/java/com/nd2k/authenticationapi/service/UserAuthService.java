@@ -4,7 +4,7 @@ import com.nd2k.authenticationapi.model.auth.Role;
 import com.nd2k.authenticationapi.model.auth.User;
 import com.nd2k.authenticationapi.model.dto.LoginDto;
 import com.nd2k.authenticationapi.model.dto.RegisterDto;
-import com.nd2k.authenticationapi.model.dto.ResponseDto;
+import com.nd2k.authenticationapi.model.dto.AuthResponseDto;
 import com.nd2k.authenticationapi.repository.AuthRepository;
 import com.nd2k.authenticationapi.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,6 @@ public class UserAuthService {
     private final JwtUtils jwtUtils;
 
     public boolean registerNewUser(RegisterDto registerDto) {
-        //TODO:Validate user input
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(Role.ROLE_USER.toString()));
         User newUser = User.builder()
@@ -43,13 +42,13 @@ public class UserAuthService {
         return true;
     }
 
-    public ResponseDto loginUser(LoginDto loginDto) {
+    public AuthResponseDto loginUser(LoginDto loginDto) {
         Authentication authentication = authenticationProvider.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword())
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwtToken = jwtUtils.generateJwtToken(authentication);
-        return ResponseDto.builder()
+        return AuthResponseDto.builder()
                 .email(authentication.getName())
                 .authorities(authentication.getAuthorities())
                 .jwtToken(jwtToken)
