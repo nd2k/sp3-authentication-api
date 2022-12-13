@@ -6,6 +6,9 @@ spring:
       uri: mongodb+srv://${DB_USER}:${DB_PASSWORD}${DB_URI}
       database: ${USER_MANAGEMENT}
 security:
-  jwt:
-    secret: ${JWT_SECRET}
-    expirationMs: ${JWT_EXPIRATION_MS}
+  accessToken:
+    secret: ${ACCESS_TOKEN_SECRET}
+    expirationMinutes: ${ACCESS_TOKEN_EXPIRATION_MINUTES}
+  refreshToken:
+    secret: ${REFRESH_TOKEN_SECRET}
+    expirationDays: ${REFRESH_TOKEN_EXPIRATION_DAYS}

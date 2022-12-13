@@ -1,5 +1,7 @@
 package com.nd2k.authenticationapi.security;
 
+import com.nd2k.authenticationapi.model.auth.User;
+import com.nd2k.authenticationapi.repository.AuthRepository;
 import com.nd2k.authenticationapi.utils.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,6 +18,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -23,19 +26,21 @@ import java.io.IOException;
 public class AuthenticationJwtTokenFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
-    private final UserDetailsService userDetailsService;
+    private final AuthRepository authRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            String jwtToken = parseJwt(request);
-            if (jwtToken != null && jwtUtils.validateJwtToken(jwtToken)) {
-                String email = jwtUtils.getEmailFromJwtToken(jwtToken);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities()
-                );
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            Optional<String> jwtToken = parseJwt(request);
+            if (jwtToken.isPresent() && jwtUtils.validateAccessToken(jwtToken.get())) {
+                String userId = jwtUtils.getUserIdFromAccessToken(jwtToken.get());
+                Optional<User> user = authRepository.findById(userId);
+                if (user.isPresent()) {
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                            user.get().getEmail(), null, user.get().getAuthorities()
+                    );
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                }
             }
         } catch (RuntimeException e) {
             log.error(e.getMessage(), e);
@@ -43,11 +48,11 @@ public class AuthenticationJwtTokenFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String parseJwt(HttpServletRequest request) {
+    private Optional<String> parseJwt(HttpServletRequest request) {
         String headerAuthJwt = request.getHeader("Authorization");
         if (StringUtils.hasText(headerAuthJwt) && headerAuthJwt.startsWith("Bearer ")) {
-            return headerAuthJwt.substring(7);
+            return Optional.of(headerAuthJwt.substring(7));
         }
-        return null;
+        return Optional.empty();
     }
 }
