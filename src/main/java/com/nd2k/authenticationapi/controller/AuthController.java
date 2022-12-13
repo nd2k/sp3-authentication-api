@@ -20,6 +20,7 @@ import static java.lang.Boolean.TRUE;
 @RequiredArgsConstructor
 public class AuthController {
     private final UserAuthService userAuthService;
+    @SuppressWarnings("unused")
     @PostMapping("/register")
     public ResponseEntity<String> registerNewUser(@Valid @RequestBody RegisterDto registerDto) {
         if (TRUE.equals(userAuthService.registerNewUser(registerDto))) {
@@ -28,6 +29,7 @@ public class AuthController {
             return new ResponseEntity<>("An technical issue happened", HttpStatus.BAD_REQUEST);
         }
     }
+    @SuppressWarnings("unused")
     @PostMapping("/login")
     public AuthResponseDto loginUser(@Valid @RequestBody LoginDto loginDto) {
         return userAuthService.loginUser(loginDto);

@@ -39,12 +39,12 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<GrantedAuthority> authorities = new HashSet<>();
+        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
         for (var a : this.authorities) {
             var simpleGrantedAuthorities = new SimpleGrantedAuthority(a.getAuthority());
-            authorities.add(simpleGrantedAuthorities);
+            grantedAuthorities.add(simpleGrantedAuthorities);
         }
-        return authorities;
+        return grantedAuthorities;
     }
 
     @Override

@@ -21,6 +21,7 @@ public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
     private final AuthEntryPointJwt authEntryPointJwt;
     private final AuthenticationJwtTokenFilter authenticationJwtTokenFilter;
+    @SuppressWarnings("unused")
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -37,6 +38,7 @@ public class SecurityConfig {
         http.addFilterBefore(authenticationJwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+    @SuppressWarnings("unused")
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
